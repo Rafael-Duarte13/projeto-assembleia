@@ -53,10 +53,9 @@ class AssembleiaDAO {
             echo $e->getMessage();
         }
     }
-
     private function update(Assembleia $assembleia) {
         $sql = "UPDATE tb_assembleias SET ASS_NOME = '{$assembleia->getNome()}', ASS_DATA = '{$assembleia->getData()}'
-        WHERE PK_ASS = {$assembleia->getId()}";
+            WHERE PK_ASS = {$assembleia->getId()}";
         
         try {
             Conexao::get()->exec($sql);
