@@ -5,6 +5,9 @@ require_once(__DIR__ . "/classes/dao/AssembleiaDAO.class.php");
 <?php
 $assembleia = new Assembleia();
 $dao = new AssembleiaDAO();
+if (isset($_POST['editar']) && $_POST['editar'] == 'editar') {
+    $assembleia = $dao->findById($_POST['id']);
+}
 $assembleias = $dao->findAll();
 ?>
 
@@ -104,7 +107,12 @@ $tipos_assembleias = $dao->findAll();
                         <td><?=$assembleia->getNome();?></td>
                         <td><?=$assembleia->getData();?></td>
                         <td>
-                            <button type="submit" data-toggle="modal" data-target="#janela1"><i class="far fa-edit"></i></button>
+                            <form action="" method="post">
+                                <input type="hidden" name="id" value="<?=$assembleia->getId()?>">
+                                <button type="submit" data-toggle="modal" data-target="#janela1" name="editar" value="editar">
+                                    <i class="far fa-edit"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -123,15 +131,17 @@ $tipos_assembleias = $dao->findAll();
             </div>
             <div class="modal-body">
 
-                <form method="post" action="">
+                <form action="" method="post">
                     <div class="form-row">
 
+                        <input type="hidden" name="id" value="<?=$assembleia->getId()?>">
                         <div class="col-md-6 mb-3">
 					        <div class="form-group">
 						        <label for="tipo_assemb." class="required">Tipo de Assembléia</label>
 						        <select class="form-control" id="tipo_assemb." name="tipo_assembleia">
+                                    <option selected disabled></option>
 							        <?php foreach ($tipos_assembleias as $tipo_assembleia): ?>
-                                    <option value="<?=$tipo_assembleia->getId()?>"><?=$tipo_assembleia->getNome();?></option>
+                                    <option><?=$tipo_assembleia->getNome();?></option>
                                     <?php endforeach; ?>                             
                                 </select>
 					        </div>
@@ -139,23 +149,22 @@ $tipos_assembleias = $dao->findAll();
                         
                         <div class="col-md-10 mb-3">
 					        <label for="nome-assembleia" class="required">Nome da Assembléia</label>
-					        <input type="text" class="form-control" id="nome-assembleia" name="nome-assembleia" required value="<?=$tipo_assembleia->getNome();?>"/>
+					        <input type="text" class="form-control" id="nome-assembleia" name="assembleia" required value="<?=$assembleia->getNome()?>">
                         </div>
                         
                         <div class="col-md-3 mb-3">
 					        <label for="data-assembleia" class="required">Data da Assembléia</label>
-					        <input type="date" class="form-control" id="data-assembleia" name="data-assembleia" required />
+					        <input type="date" class="form-control" id="data-assembleia" name="data-assembleia" required>
 				        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Editar</button>
+                <button type="button" class="btn btn-primary" name="salvar" value="salvar">Salvar</button>
             </div>
             </div>
         </div>
         </div>
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

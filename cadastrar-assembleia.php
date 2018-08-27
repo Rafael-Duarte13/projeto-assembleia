@@ -106,7 +106,7 @@ $tipos_assembleias = $dao->findAll();
 				<!-- Nome da assembléia -->
 				<div class="col-md-10 mb-3">
 					<label for="nome-assembleia" class="required">Nome da Assembléia</label>
-					<input type="text" class="form-control" id="nome-assembleia" name="nome-assembleia" required />
+					<input type="text" class="form-control" id="nome-assembleia" name="nome-assembleia" required">
 				</div>
 				<!-- Fim da assembléia  -->
 
