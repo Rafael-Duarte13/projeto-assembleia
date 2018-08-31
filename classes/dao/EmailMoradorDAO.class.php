@@ -1,35 +1,35 @@
 <?php
 require_once(__DIR__ . "/Conexao.class.php");
-require_once(__DIR__ . "/../modelo/FoneMorador.class.php");
+require_once(__DIR__ . "/../modelo/EmailMorador.class.php");
 require_once(__DIR__ . "/../modelo/Morador.class.php");
 
-class FoneMoradorDAO {
+class EmailMoradorDAO {
     public function findAll() {
-        $sql = "SELECT PK_MOR, FDM_FONE FROM tb_fone_moradores 
-            JOIN tb_moradores ON PK_MOR = FK_FDM_MOR";
+        $sql = "SELECT PK_MOR, EDM_EMAIL FROM tb_emails_moradores 
+            JOIN tb_moradores ON PK_MOR = FK_EDM_MOR";
         $statement = Conexao::get()->prepare($sql);
         $statement->execute();
 
         $rows = $statement->fetchAll();
-        $fones = array();
+        $emails = array();
         foreach ($rows as $row) {
             $morador = new Morador();
             $morador->setId($row['PK_MOR']);
 
-            $fone = new FoneMorador();
-            $fone->setId($morador);
-            $fone->setFone($row['FDM_FONE']);
-            array_push($fones, $fone);
+            $email = new EmailMorador();
+            $email->setId($morador);
+            $email->setEmail($row['EDM_EMAIL']);
+            array_push($emails, $email);
         }
-        return $fones;
+        return $emails;
     }
 
     public function findById($id) {
-        $sql = "SELECT PK_MOR, FDM_FONE FROM tb_fone_moradores 
-            JOIN tb_moradores ON PK_MOR = FK_FDM_MOR
+        $sql = "SELECT PK_MOR, EDM_EMAIL FROM tb_emails_moradores 
+            JOIN tb_moradores ON PK_MOR = FK_EDM_MOR
             WHERE PK_MOR = :id";
         $statement = Conexao::get()->prepare($sql);
-        $id = $foneMorador->getId();
+        $id = $emailMorador->getId();
         $statement->bindParam(":id", $id);
         $statement->execute();
 
@@ -38,30 +38,30 @@ class FoneMoradorDAO {
         $morador = new Morador();
         $morador->setId($row['PK_MOR']);
 
-        $fone = new FoneMorador();
-        $fone->setId($morador);
-        $fone->setFone($row['FDM_FONE']);
+        $email = new EmailMorador();
+        $email->setId($morador);
+        $email->setEmail($row['EDM_EMAIL']);
 
-        return $fone;
+        return $email;
     }
-
-    public function save(FoneMorador $foneMorador) {
-        if ($foneMorador->getId() == null) {
-            $this->insert($foneMorador);
+    
+    public function save(EmailMorador $emailMorador) {
+        if ($emailMorador->getId() == null) {
+            $this->insert($emailMorador);
         } else {
-            $this->update($foneMorador);
+            $this->update($emailMorador);
         }
     }
-
-    private function insert(FoneMorador $foneMorador) {
-        $sql = "INSERT INTO tb_fone_moradores (FK_FDM_MOR, FDM_FONE) 
-            VALUES (:id, :fone)";
+    
+    private function insert(EmailMorador $emailMorador) {
+        $sql = "INSERT INTO tb_emails_moradores (FK_EDM_MOR, EDM_EMAIL) 
+            VALUES (:id, :email)";
         try {
             $statement = Conexao::get()->prepare($sql);
-            $id = $foneMorador->getId();
-            $fone = $foneMorador->getFone();
+            $id = $emailMorador->getId();
+            $email = $emailMorador->getEmail();
             $statement->bindParam(":id", $id);
-            $statement->bindParam(":fone", $fone);
+            $statement->bindParam(":email", $email);
             $statement->execute();
             return $this->findById(Conexao::get()->lastInsertId());
         } catch(PDOException $e) {
@@ -69,17 +69,18 @@ class FoneMoradorDAO {
             return null;
         }
     }
-    private function update(FoneMorador $foneMorador) {
-        $sql = "UPDATE tb_fone_moradores 
-            SET FK_FDM_MOR = :id, 
-                FDM_FONE = :fone 
-            WHERE FK_FDM_MOR = :id";
+
+    private function update(EmailMorador $emailMorador) {
+        $sql = "UPDATE tb_emails_moradores 
+            SET FK_EDM_MOR = :id, 
+                EDM_EMAIL = :email 
+            WHERE FK_EDM_MOR = :id";
         try {
             $statement = Conexao::get()->prepare($sql);
-            $id = $foneMorador->getId();
-            $fone = $foneMorador->getFone();
+            $id = $emailMorador->getId();
+            $email = $emailMorador->getEmail();
             $statement->bindParam(":id", $id);
-            $statement->bindParam(":fone", $fone);
+            $statement->bindParam(":email", $email);
             $statement->execute();
             return $this->findById(Conexao::get()->lastInsertId());
         } catch(PDOException $e) {
@@ -89,10 +90,10 @@ class FoneMoradorDAO {
     }
 
     public function remove($id) {
-        $sql = "DELETE FROM tb_fone_moradores WHERE FK_FDM_MOR = :id";
+        $sql = "DELETE FROM tb_emails_moradores WHERE FK_EDM_MOR = :id";
         try {
             $statement = Conexao::get()->prepare($sql);
-            $id = $foneMorador->getId();
+            $id = $emailMorador->getId();
             $statement->bindParam(":id", $id);
             $statement->execute();
             return $this->findById(Conexao::get()->lastInsertId());
