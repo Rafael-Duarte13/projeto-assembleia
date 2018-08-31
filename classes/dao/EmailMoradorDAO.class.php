@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__ . "/Conexao.class.php");
-require_once(__DIR__ . "/../modelo/EmailMorador.class.php");
-require_once(__DIR__ . "/../modelo/Morador.class.php");
+require_once(__DIR__ . "Caminho do arquivo: Conexao.class.php");
+require_once(__DIR__ . "Caminho do arquivo: EmailMorador.class.php");
+require_once(__DIR__ . "Caminho do arquivo: Morador.class.php");
 
 class EmailMoradorDAO {
     public function findAll() {
