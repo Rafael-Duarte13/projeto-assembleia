@@ -5,6 +5,9 @@
 <?php require_once(__DIR__ . "/../classes/dao/PautaDAO.class.php"); ?>
 <?php require_once(__DIR__ . "/../classes/dao/TipoAssembleiaDAO.class.php"); ?>
 <?php 
+
+include(__DIR__ . "/../administracao/logado.php");
+
 $dao = new PautaDAO();
 $pauta = new Pauta();
 // $pautasAssembleias = new Pauta();
@@ -16,7 +19,6 @@ $dao3 = new TipoAssembleiaDAO();
 $tipoAssembleia = new TipoAssembleia();
 
 $assembleiaId = '';
-
 if (isset($_POST['atualizar']) && $_POST['atualizar'] == 'atualizar') {
     $pautas2 = $dao->findAllAssembleia($_POST['idAss']);
 }
@@ -24,7 +26,7 @@ if (isset($_POST['atualizar']) && $_POST['atualizar'] == 'atualizar') {
 if (isset($_POST['salvar']) && $_POST['salvar'] == 'salvar') {
     $pauta->setNome(strtoupper($_POST['nome']));
     $pauta->setDescricao(strtoupper($_POST['descricao']));
-    $pauta->setFkPauAss($_POST['assembleia']);
+    $pauta->getAssembleia()->setId($_POST['assembleia']);
     $assembleiaId = $_POST['assembleia'];
     if ($_POST['id'] != '') {
         $pauta->setId($_POST['id']);
@@ -46,7 +48,6 @@ $pautas = $dao->findAll();
 $assembleias = $dao2->findAll();
 $tipoAssembleias = $dao3->findAll();
 
-
 if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'pesquisarAssembleia') {
     // $morador->setFkMorSin($_POST['fk']);
     $pautasAssembleias = $dao->findPautaAssembleia($_POST['assembleia']);
@@ -54,115 +55,18 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
 } else {
     $pautasAssembleias = $dao->findAll();
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <title>Cadastrar Pauta</title>
-	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="../assets/css/base.css">
-	<link rel="stylesheet" type="text/css" href="../assets/css/login.css">
-	<link rel="stylesheet" type="text/css" href="../assets/css/botoes.css">
-	<link rel="stylesheet" type="text/css" href="../assets/css/responsive.css">
-    <link rel="stylesheet" href="../assets/css/all.css">
-    <link rel="stylesheet" href="../assets/css/home.css">
-    <script>
-        function showAssembleia(str) {
-            if (str == "") {
-                document.getElementById("txtHint").innerHTML = "";
-                return;
-            } else { 
-                if (window.XMLHttpRequest) {
-                    // code for IE7+, Firefox, Chrome, Opera, Safari
-                    xmlhttp = new XMLHttpRequest();
-                } else {
-                    // code for IE6, IE5
-                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-                xmlhttp.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        document.getElementById("txtHint").innerHTML = this.responseText;
-                    }
-                };
-                xmlhttp.open("GET","getAssembleia.php?q="+str,true);
-                xmlhttp.send();
-            }
-        }
-</script>
+    <title>Cadastrar Pauta</title> 
 </head>
 <body>
-    <!-- Menu lateral -->
-    <div class="sidenav">
-        <li>
-            <a href="index.php"><i class="fa fa-home"></i> <span>Home</span></a>
-        </li>  
-        
-        <!-- <button class="dropdown-btn"><i class="fa fa-bars"></i> <span>Assembléia</span>  
-            <i class="fa fa-caret-down"></i>
-        </button> -->
-        <button class="dropdown-btn"><i class="fa fa-list-alt"></i> <span>Cadastrar</span>  
-            <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-container">
-            <button class="dropdown-btn"> <i class="fas fa-hotel"></i> <span>Assembléias</span>  
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-container">
-                <a href="../assembleia/index.php">Assembléia</a>  
-                <a href="../tipoAssembleia/index.php">Tipo de Assembléia</a>
-            </div>
-            <button class="dropdown-btn"><i class="fa fa-list-alt"></i> <span>Pautas</span>  
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-container">
-                <a href="../pauta/index.php">Pauta</a>
-                <a href="../opcaoResposta/index.php">Resposta</a>                 
-            </div>
-            <a href="../morador/index.php"><i class="fa fa-users"></i> <span>Morador</span> </a>
-            <a href="../sindico/index.php"><i class="fa fa-user"></i> <span>Síndico</span> </a>
-        </div>
-        <button class="dropdown-btn"><i class="fa fa-list-alt"></i> <span>Visualizar</span>  
-            <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-container">
-            <button class="dropdown-btn"> <i class="fas fa-hotel"></i> <span>Assembléias</span>  
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-container">
-                <a href="../assembleia/index.php">Assembléia</a>  
-                <a href="../tipoAssembleia/index.php">Tipo de Assembléia</a>
-            </div>
-            <button class="dropdown-btn"><i class="fa fa-list-alt"></i> <span>Pautas</span>  
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-container">
-                <a href="../pauta/index.php">Pauta</a>
-                <a href="../opcaoResposta/index.php">Resposta</a>                 
-            </div>
-        </div>
-        
-    </div>
-    <script>
-        /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
-        var dropdown = document.getElementsByClassName("dropdown-btn");
-        var i;
-
-        for (i = 0; i < dropdown.length; i++) {
-            dropdown[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var dropdownContent = this.nextElementSibling;
-                if (dropdownContent.style.display === "block") {
-                    dropdownContent.style.display = "none";
-                } else {
-                    dropdownContent.style.display = "block";
-                }
-            });
-        }
-    </script>
-    <!-- Fim menu lateral -->
+    <!-- include Menu -->
+    <?php
+        include(__DIR__ . "/../administracao/menu.php");
+    ?>
 
 	<!-- Início do container -->
 	<div class="container">
@@ -175,19 +79,13 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
                             <label for="assembleia" class="required">Selecione uma Assembléia vigente</label>
                                 <div class="col-md-12 mb-3"><!-- Tipo de Assembleia -->
                                     <div >
-                                        <select class="form-control" id="assembleia" name="assembleia" onchange="showAssembleia(this.value)">
-                                        <option value="" selected disabled>Selecione uma Assembléia vigente</option>
-                                            <?php
-                                                $data = date ("Y-m-d"); //Data de hoje no formato do banco
-                                                $data2 = date ("d-m-Y"); //Data de hoje no formato BR
-                                                //echo"<input type='date' value='$data' name='date'";
-                                                foreach ($assembleias as $assembleia): ?>
-                                                    <?php if ($assembleia->getData() >= $data):  ?> 
+                                        <select class="form-control" id="assembleia" name="assembleia" onchange="showPautas(this.value);">
+                                        <option value="0" selected disabled>Selecione uma assembléia</option>
+                                            <?php foreach ($assembleias as $assembleia):?>
                                                         <option id="<?=$assembleia->getId();?>" value="<?=$assembleia->getId();?>"> 
-                                                            <?=$assembleia->getId() . " - " . $assembleia->getNome() . " - " . $assembleia->getData(); ?> <?php endif;?>
+                                                            <?=$assembleia->getId() . " - " . $assembleia->getNome() . " - " . $assembleia->getData();?>
                                                         </option> 
-                                                <?php endforeach; 
-                                            ?>                                    
+                                                <?php endforeach;?>
                                         </select> 
                                     </div>                            
                                 </div>  
@@ -212,8 +110,47 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
                     </form> <!-- Fim Form Geral-->
                 </fieldset>
             </div>
-        <!-- Tabela -->
-        <div id="txtHint" class="col-12"></div> 
+            <div class="col-12" id="div-table"> <!-- Tabela -->
+                <legend>Lista de pautas das assembléias</legend>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <th>#</th>
+                        <th>Pauta</th>
+                        <th>Descrição</th>
+                        <th>Id Assembleia</th>
+                        <th colspan="2">Ações</th>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            foreach ($pautasAssembleias as $pauta): ?>
+                                <tr>
+                                    <td><?=$pauta->getId();?></td>
+                                    <td><?=$pauta->getNome();?></td>
+                                    <td><?=$pauta->getDescricao();?></td>
+                                    <td><?=$pauta->getAssembleia()->getId();?></td>
+                                    <td>
+                                        <form method="post" action="index.php">
+                                            <input type="hidden" name="id" value="<?=$pauta->getId();?>">
+                                            <button type="submit" class="btn btn-primary" name="editar" value="editar">
+                                                <i class="far fa-edit"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="index.php"> 
+                                            <input type="hidden" name="id" value="<?=$pauta->getId();?>">
+                                            <button type="submit" class="btn btn-danger" name="excluir" value="excluir">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                    </tbody>
+                </table> 
+            </div> <!-- Fim Tabela -->
+        </div> 
     </div> <!-- Fim do container -->
+    <script src="../assets/js/ajax_pautas.js"></script>
 </body>
 </html> 
