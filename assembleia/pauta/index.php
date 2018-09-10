@@ -19,15 +19,18 @@ $dao3 = new TipoAssembleiaDAO();
 $tipoAssembleia = new TipoAssembleia();
 
 $assembleiaId = '';
+
+$pautaDao = new PautaDAO();
+$pautas2 = $pautaDao->findPautaAssembleia($assembleia);
+
 if (isset($_POST['atualizar']) && $_POST['atualizar'] == 'atualizar') {
     $pautas2 = $dao->findAllAssembleia($_POST['idAss']);
 }
 
 if (isset($_POST['salvar']) && $_POST['salvar'] == 'salvar') {
-    $pauta->setNome(strtoupper($_POST['nome']));
-    $pauta->setDescricao(strtoupper($_POST['descricao']));
+    $pauta->setNome($_POST['nome']);
+    $pauta->setDescricao($_POST['descricao']);
     $pauta->getAssembleia()->setId($_POST['assembleia']);
-    $assembleiaId = $_POST['assembleia'];
     if ($_POST['id'] != '') {
         $pauta->setId($_POST['id']);
     }
@@ -48,6 +51,7 @@ $pautas = $dao->findAll();
 $assembleias = $dao2->findAll();
 $tipoAssembleias = $dao3->findAll();
 
+
 if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'pesquisarAssembleia') {
     // $morador->setFkMorSin($_POST['fk']);
     $pautasAssembleias = $dao->findPautaAssembleia($_POST['assembleia']);
@@ -55,6 +59,7 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
 } else {
     $pautasAssembleias = $dao->findAll();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -74,24 +79,28 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
             <div class="col-md-12 mb-3">
                 <fieldset>
                     <legend>Cadastro de Pautas</legend>
-                    <form method="post" action="?pauta.php=up" id="um"><!-- Form Geral -->
+                    <form method="post" action="index.php"><!-- Form Geral -->
                         <div class="form-row"><!-- Div1 -->
                             <label for="assembleia" class="required">Selecione uma Assembléia vigente</label>
-                                <div class="col-md-12 mb-3"><!-- Tipo de Assembleia -->
+                                <div class="col-md-12 mb-3" id="div_assembleias"><!-- Tipo de Assembleia -->
                                     <div >
-                                        <select class="form-control" id="assembleia" name="assembleia" onchange="showPautas(this.value);">
-                                        <option value="0" selected disabled>Selecione uma assembléia</option>
-                                            <?php foreach ($assembleias as $assembleia):?>
-                                                        <option id="<?=$assembleia->getId();?>" value="<?=$assembleia->getId();?>"> 
-                                                            <?=$assembleia->getId() . " - " . $assembleia->getNome() . " - " . $assembleia->getData();?>
+                                        <select class="form-control" name="assembleia" onchange="show_pautas(this.value);">
+                                            <?php
+                                                $data = date ("Y-m-d"); //Data de hoje no formato do banco
+                                                foreach ($assembleias as $assembleia): ?>
+                                                    <?php if ($assembleia->getData() >= $data):  ?> 
+                                                            <option id="<?=$assembleia->getId();?>" value="<?=$assembleia->getId();?>"> 
+                                                            <?=$assembleia->getId() . " - " . $assembleia->getNome() . " - " . $assembleia->getData(); ?> <?php endif;?>
                                                         </option> 
-                                                <?php endforeach;?>
+                                                <?php endforeach; 
+                                            ?>                                    
                                         </select> 
                                     </div>                            
                                 </div>  
                                 <div class="col-md-12 mb-3"><!-- Nome da pauta -->
                                     <label for="nome" class="required">Pauta</label>
                                     <input type="hidden" name="id" value="<?=$pauta->getId();?>">
+                                    <!-- <//?php echo "<script>alert('Id da pauta: ' + {$pauta->getId()})</script>"; ?> -->
                                     <input type="text" class="form-control" id="nome" name="nome" value="<?=$pauta->getNome();?>" maxlength="100" placeholder="Nome breve para pauta" required />
                                 </div><!-- Fim Nome da pauta -->
 
@@ -110,24 +119,43 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
                     </form> <!-- Fim Form Geral-->
                 </fieldset>
             </div>
-            <div class="col-12" id="div-table"> <!-- Tabela -->
-                <legend>Lista de pautas das assembléias</legend>
+           
+            <div class="col-12" id="div_pautas"> <!-- Tabela -->  
                 <table class="table table-striped table-hover">
                     <thead>
-                        <th>#</th>
+                        <!-- <th>#</th> -->
+                        <th>Item</th>
                         <th>Pauta</th>
                         <th>Descrição</th>
-                        <th>Id Assembleia</th>
+                        <th>Assembleia</th>
                         <th colspan="2">Ações</th>
                     </thead>
-                    <tbody>
+                    <tbody>                
+                        <!-- Fim Botões -->
                         <?php 
-                            foreach ($pautasAssembleias as $pauta): ?>
+                        $i = count($pautas);
+                        // echo "<script>alert('número de pautas: ' + $i)</script>";
+                        $j = count($assembleias);
+                        // echo "<script>alert('número de assembléias: ' + ($j-1))</script>";
+                        // $ultimaAssembleia = end($pautas);
+                        $num = 0;
+                        foreach ($pautas as $pauta) {
+                            if ($pauta->getAssembleia()->getId() == ($j-1)){
+                                $num++;
+                            }
+                        }
+                        foreach ($pautas as $pauta): ?>
+                            <!-- <//?php $numAssembleia = $pauta->getAssembleia()->getId(); -->
+                            <!-- echo "<script>alert('Pautas '+{$pauta->getId()})</script>"; -->
+                             <!-- echo "<script>alert('Assembleias '+{$pauta->getAssembleia()->getId()})</script>"; ?> -->
+                            <?php if ($pauta->getAssembleia()->getId() == ($j)): ?> <!--comparando se as pautas fazem parte da última assembleia cadastrada -->
+                                <!-- //echo "<script>alert('Pautas '+{$pauta->getId()})</script>"; -->
                                 <tr>
-                                    <td><?=$pauta->getId();?></td>
+                                    <!-- <td><//?=$pauta->getId();?></td> -->
+                                    <td><?=$num--;?></td>
                                     <td><?=$pauta->getNome();?></td>
                                     <td><?=$pauta->getDescricao();?></td>
-                                    <td><?=$pauta->getAssembleia()->getId();?></td>
+                                    <td><?=$pauta->getAssembleia()->getNome();?></td>
                                     <td>
                                         <form method="post" action="index.php">
                                             <input type="hidden" name="id" value="<?=$pauta->getId();?>">
@@ -144,13 +172,14 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
                                             </button>
                                         </form>
                                     </td>
-                                </tr>
-                            <?php endforeach; ?>
+                                </tr>                                
+                        <?php endif; endforeach; ?>
+                        <!-- </form> Fim Form Geral -->
                     </tbody>
-                </table> 
+                </table>
             </div> <!-- Fim Tabela -->
         </div> 
     </div> <!-- Fim do container -->
-    <script src="../assets/js/ajax_pautas.js"></script>
+    <script src="../assets/js/ajax_funcoes.js"></script>
 </body>
 </html> 
