@@ -24,12 +24,12 @@ $apartamentos = $apartamentoDao->findApartamentoBloco($bloco);
 	<link rel="stylesheet" type="text/css" href="../assets/css/botoes.css">
 	<link rel="stylesheet" type="text/css" href="../assets/css/responsive.css">
     <link rel="stylesheet" href="../assets/css/all.css">
-    <link rel="stylesheet" href="../assets/css/home.css">
+    <!-- <link rel="stylesheet" href="../assets/css/home.css"> -->
 </head>
 <body>    
         <label for="apartamentoId">Apartamento</label>
-        <select class="form-control" name="apartamentoId">
-            <option value="0" selected disabled>--SELECIONE--</option>
+        <select class="form-control" name="apartamentoId" required>
+            <option value=""></option>
             <?php foreach ($apartamentos as $apartamento): ?>                                                    
                     <option id="<?=$apartamento->getId();?>" value="<?=$apartamento->getId();?>"><?=$apartamento->getNome();?></option> 
                 <?php endforeach; 

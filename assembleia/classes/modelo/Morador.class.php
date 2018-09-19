@@ -1,22 +1,20 @@
 <?php
 
-// require_once 'Apartamento.class.php';
-
+require_once "Perfil.class.php";
 class Morador {
 
     private $id;
     private $nome;
+    private $cpf;
     private $login;
     private $senha;
-    private $ultimoAcesso;
-    private $foto;
-    // private $sindico;
-    private $apartamento;
+    private $status;
+    private $perfil;
+    
+    public function __construct() {
+        $this->perfil = new Perfil();
+    }
 
-    // public function __construct() {
-    //     $this->apartamento = new Apartamento();
-    // }
-   
     public function getId() {
         return $this->id;
     }
@@ -33,6 +31,14 @@ class Morador {
         $this->nome = strtoupper($nome);
     }
 
+    public function getCpf() {
+        return $this->cpf;
+    }
+    
+    public function setCpf($cpf) {
+        $this->cpf = $cpf;
+    }
+
     public function getLogin() {
         return $this->login;
     }
@@ -46,38 +52,24 @@ class Morador {
     }
     
     public function setSenha($senha) {
+        // $this->senha = md5($senha);
         $this->senha = $senha;
     }
 
-    public function getUltimoAcesso() {
-        return $this->ultimoAcesso;
+    
+    public function getStatus() {
+        return $this->status;
     }
     
-    public function setUltimoAcesso($ultimoAcesso) {
-        $this->ultimoAcesso = $ultimoAcesso;
-    }
-
-    public function getFoto() {
-        return $this->foto;
-    }
-    
-    public function setFoto($foto) {
-        $this->foto = $foto;
+    public function setStatus($status) {
+        $this->status = $status;
     }
 
-    // public function getSindico() {
-    //     return $this->sindico;
-    // }
+    public function getPerfil() {
+        return $this->perfil;
+    }
     
-    // public function setSindico($sindico) {
-    //     $this->sindico = $sindico;
-    // }
-
-    // public function getApartamento() {
-    //     return $this->apartamento;
-    // }
-    
-    // public function setApartamento(Apartamento $apartamento) {
-    //     $this->apartamento = $apartamento;
-    // }
+    public function setPerfil(Perfil $perfil) {
+        $this->perfil = $perfil;
+    }
 }

@@ -1,9 +1,9 @@
 <?php
 require_once(__DIR__ . "/./Morador.class.php");
 
-class FoneMorador {
+class EmailMorador {
     private $morador;
-    private $fone;
+    private $email;
 
     public function __construct() {
         $this->morador = new Morador();
@@ -16,10 +16,10 @@ class FoneMorador {
         $this->morador = $morador;
     }
 
-    public function getFone() {
-        return $this->fone;
+    public function getEmail() {
+        return $this->email;
     }
-    public function setFone($fone) {
-        $this->fone = $fone;
+    public function setEmail($email) {
+        $this->email = $email;
     }
 }

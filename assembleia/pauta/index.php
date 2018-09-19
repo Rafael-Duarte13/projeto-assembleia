@@ -68,13 +68,14 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
     <title>Cadastrar Pauta</title> 
 </head>
 <body>
+    <!-- Início do container -->
+    <div class="container-fluid">
     <!-- include Menu -->
     <?php
         include(__DIR__ . "/../administracao/menu.php");
     ?>
 
-	<!-- Início do container -->
-	<div class="container">
+    <div class="containerMenuDireita">
         <div class="row" style="margin-top: 5%;">
             <div class="col-md-12 mb-3">
                 <fieldset>
@@ -138,7 +139,7 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
                         $j = count($assembleias);
                         // echo "<script>alert('número de assembléias: ' + ($j-1))</script>";
                         // $ultimaAssembleia = end($pautas);
-                        $num = 0;
+                        $num = 1;
                         foreach ($pautas as $pauta) {
                             if ($pauta->getAssembleia()->getId() == ($j-1)){
                                 $num++;
@@ -179,6 +180,7 @@ if (!empty($_POST['pesquisarAssembleia']) && $_POST['pesquisarAssembleia'] == 'p
                 </table>
             </div> <!-- Fim Tabela -->
         </div> 
+    </div>
     </div> <!-- Fim do container -->
     <script src="../assets/js/ajax_funcoes.js"></script>
 </body>
